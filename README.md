@@ -35,4 +35,4 @@ And in iReport Font install what you wanna use (check pdf-embedded), to pick the
 Please choose PDF-Encoding is "Identity-H", you can generate Khmer text now.
 
 
-
+## If this helps you, please give me a Github Star. Thanks
