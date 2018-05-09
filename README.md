@@ -11,3 +11,14 @@ formats including HTML, PDF, Excel, OpenOffice and Word.
 Now *ONLY* SimplePdfTextRender.java is work
 
 - Image is not supported.
+
+
+## You should apply the iText license key
+
+Apply the license Key from https://pages.itextpdf.com/iText-7-Free-Trial-Landing-Page-1.html
+
+And use the following codes in your main method.
+
+import com.itextpdf.licensekey.LicenseKey;
+
+LicenseKey.loadLicenseFile("c:\\itext-license.xml");
