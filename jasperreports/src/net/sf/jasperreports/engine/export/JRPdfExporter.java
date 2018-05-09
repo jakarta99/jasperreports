@@ -60,7 +60,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.DocumentException;
 
-import com.itextpdf.io.font.FontConstants;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFont;
@@ -946,16 +945,12 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 				ExporterInputItem item = items.get(reportIndex);
 				setCurrentExporterInputItem(item);
 				pageFormat = jasperPrint.getPageFormat(0);
-
-				// NO NEED in itext7
-				// setPageSize(null);
 				
 				List<JRPrintPage> pages = jasperPrint.getPages();
 				if (pages != null && pages.size() > 0)
 				{
 					if (items.size() > 1)
 					{
-						//document.newPage();
 						pdfDocument.addNewPage();
 
 						if( isCreatingBatchModeBookmarks )
@@ -985,16 +980,15 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 						pageFormat = jasperPrint.getPageFormat(pageIndex);
 						
 						
-						// NO NEED in itext7
-						/*
-						if (sizePageToContent || oldPageFormat != pageFormat)
-						{
-							setPageSize(sizePageToContent ? page : null);
-						}
-						*/
-
 						pdfCanvas = new PdfCanvas(pdfDocument.addNewPage());
 						Rectangle rectangle = new Rectangle(pageFormat.getPageWidth(), pageFormat.getPageHeight());
+						pdfCanvas.rectangle(rectangle);
+						
+						if (sizePageToContent || oldPageFormat != pageFormat)
+						{
+							rectangle =  getPageSize(sizePageToContent ? page : null);
+						}
+						
 						pdfCanvas.rectangle(rectangle);
 						pdfCanvas.stroke();
 						
@@ -1066,7 +1060,6 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 			}
 		}
 
-		//return os.toByteArray();
 	}
 
 
@@ -1100,43 +1093,43 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 	/**
 	 *
 	 */
-//	protected void setPageSize(JRPrintPage page) throws JRException, DocumentException, IOException
-//	{
-//		int pageWidth = 0; 
-//		int pageHeight = 0;
-//
-//		if (page != null)
-//		{
-//			Collection<JRPrintElement> elements = page.getElements();
-//			for (JRPrintElement element : elements)
-//			{
-//				int elementRight = element.getX() + element.getWidth();
-//				int elementBottom = element.getY() + element.getHeight();
-//				pageWidth = pageWidth < elementRight ? elementRight : pageWidth;
-//				pageHeight = pageHeight < elementBottom ? elementBottom : pageHeight;
-//			}
-//			
-//			pageWidth += pageFormat.getRightMargin();
-//			pageHeight += pageFormat.getBottomMargin();
-//		}
-//		
-//		pageWidth = pageWidth < pageFormat.getPageWidth() ? pageFormat.getPageWidth() : pageWidth; 
-//		pageHeight = pageHeight < pageFormat.getPageHeight() ? pageFormat.getPageHeight() : pageHeight; 
-//		
-//		Rectangle pageSize;
-//		switch (pageFormat.getOrientation())
-//		{
-//		case LANDSCAPE:
-//			// using rotate to indicate landscape page
-//			pageSize = new Rectangle(pageWidth, pageHeight);
-//			break;
-//		default:
-//			pageSize = new Rectangle(pageWidth, pageHeight);
-//			break;
-//		}
-//		
-//		document.setPageSize(pageSize);
-//	}
+	protected Rectangle getPageSize(JRPrintPage page) throws JRException, DocumentException, IOException
+	{
+		int pageWidth = 0; 
+		int pageHeight = 0;
+
+		if (page != null)
+		{
+			Collection<JRPrintElement> elements = page.getElements();
+			for (JRPrintElement element : elements)
+			{
+				int elementRight = element.getX() + element.getWidth();
+				int elementBottom = element.getY() + element.getHeight();
+				pageWidth = pageWidth < elementRight ? elementRight : pageWidth;
+				pageHeight = pageHeight < elementBottom ? elementBottom : pageHeight;
+			}
+			
+			pageWidth += pageFormat.getRightMargin();
+			pageHeight += pageFormat.getBottomMargin();
+		}
+		
+		pageWidth = pageWidth < pageFormat.getPageWidth() ? pageFormat.getPageWidth() : pageWidth; 
+		pageHeight = pageHeight < pageFormat.getPageHeight() ? pageFormat.getPageHeight() : pageHeight; 
+		
+		Rectangle pageSize;
+		switch (pageFormat.getOrientation())
+		{
+		case LANDSCAPE:
+			// using rotate to indicate landscape page
+			pageSize = new Rectangle(pageHeight, pageWidth);
+			break;
+		default:
+			pageSize = new Rectangle(pageWidth, pageHeight);
+			break;
+		}
+		
+		return pageSize;
+	}
 
 	/**
 	 *
