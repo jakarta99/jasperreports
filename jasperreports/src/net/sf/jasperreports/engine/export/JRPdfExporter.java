@@ -89,6 +89,7 @@ import com.itextpdf.layout.Style;
 import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Text;
+import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.splitting.ISplitCharacters;
 import com.itextpdf.pdfa.PdfADocument;
 
@@ -1525,191 +1526,188 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 	 */
 	public void exportImage(JRPrintImage printImage) throws DocumentException, IOException,  JRException
 	{
-//		if (printImage.getModeValue() == ModeEnum.OPAQUE)
-//		{
-//			
-//			pdfCanvas.setFillColor(new DeviceRgb(printImage.getBackcolor().getRed(), printImage.getBackcolor().getGreen(), printImage.getBackcolor().getBlue()));
-//
-//			pdfCanvas.rectangle(
-//				printImage.getX() + getOffsetX(),
-//				pageFormat.getPageHeight() - printImage.getY() - getOffsetY(),
-//				printImage.getWidth(),
-//				- printImage.getHeight()
-//				);
-//			pdfCanvas.fill();
-//		}
-//
-//		InternalImageProcessor imageProcessor =
-//			new InternalImageProcessor(printImage);
-//		
-//		Renderable renderer = printImage.getRenderer();
-//
-//		if (
-//			renderer != null 
-//			&& imageProcessor.availableImageWidth > 0 
-//			&& imageProcessor.availableImageHeight > 0
-//			)
-//		{
-//			InternalImageProcessorResult imageProcessorResult = null;
-//			
-//			try
-//			{
-//				imageProcessorResult = imageProcessor.process(renderer);
-//			}
-//			catch (Exception e)
-//			{
-//				Renderable onErrorRenderer = getRendererUtil().handleImageError(e, printImage.getOnErrorTypeValue());
-//				if (onErrorRenderer != null)
-//				{
-//					imageProcessorResult = imageProcessor.process(onErrorRenderer);
-//				}
-//			}
-//
-//			if (imageProcessorResult != null)
-//			{
+		if (printImage.getModeValue() == ModeEnum.OPAQUE)
+		{
+			
+			pdfCanvas.setFillColor(new DeviceRgb(printImage.getBackcolor().getRed(), printImage.getBackcolor().getGreen(), printImage.getBackcolor().getBlue()));
+
+			pdfCanvas.rectangle(
+				printImage.getX() + getOffsetX(),
+				pageFormat.getPageHeight() - printImage.getY() - getOffsetY(),
+				printImage.getWidth(),
+				- printImage.getHeight()
+				);
+			pdfCanvas.fill();
+		}
+
+		InternalImageProcessor imageProcessor = new InternalImageProcessor(printImage);
+		
+		Renderable renderer = printImage.getRenderer();
+
+		if (
+			renderer != null 
+			&& imageProcessor.availableImageWidth > 0 
+			&& imageProcessor.availableImageHeight > 0
+			)
+		{
+			InternalImageProcessorResult imageProcessorResult = null;
+			
+			try
+			{
+				imageProcessorResult = imageProcessor.process(renderer);
+			}
+			catch (Exception e)
+			{
+				Renderable onErrorRenderer = getRendererUtil().handleImageError(e, printImage.getOnErrorTypeValue());
+				if (onErrorRenderer != null)
+				{
+					imageProcessorResult = imageProcessor.process(onErrorRenderer);
+				}
+			}
+
+			if (imageProcessorResult != null)
+			{
 //				setAnchor(imageProcessorResult.chunk, printImage, printImage);
 //				setHyperlinkInfo(imageProcessorResult.chunk, printImage);
-//
+
 //				tagHelper.startImage(printImage);
-//				
-//				ColumnText colText = new ColumnText(pdfCanvas);
-//				int upperY = pageFormat.getPageHeight() - printImage.getY() - imageProcessor.topPadding - getOffsetY() - imageProcessorResult.yoffset;
-//				int lowerX = printImage.getX() + imageProcessor.leftPadding + getOffsetX() + imageProcessorResult.xoffset;
-//				colText.setSimpleColumn(
-//					new Phrase(imageProcessorResult.chunk),
-//					lowerX,
-//					upperY - imageProcessorResult.scaledHeight,
-//					lowerX + imageProcessorResult.scaledWidth,
-//					upperY,
-//					imageProcessorResult.scaledHeight,
-//					Element.ALIGN_LEFT
-//					);
-//
-//				colText.go();
-//
+				
+				
+				int upperY = pageFormat.getPageHeight() - printImage.getY() - imageProcessor.topPadding - getOffsetY() - imageProcessorResult.yoffset;
+				int lowerX = printImage.getX() + imageProcessor.leftPadding + getOffsetX() + imageProcessorResult.xoffset;
+				
+				Rectangle rectangle = new Rectangle(lowerX, upperY - imageProcessorResult.scaledHeight, imageProcessorResult.scaledWidth, imageProcessorResult.scaledHeight );
+				Canvas canvas = new Canvas(pdfCanvas, pdfDocument, rectangle);
+				canvas.setTextAlignment(TextAlignment.LEFT);
+				canvas.add(imageProcessorResult.image);
+				
 //				tagHelper.endImage();
-//			}
-//		}
-//
-//
-//		if (
-//			printImage.getLineBox().getTopPen().getLineWidth().floatValue() <= 0f &&
-//			printImage.getLineBox().getLeftPen().getLineWidth().floatValue() <= 0f &&
-//			printImage.getLineBox().getBottomPen().getLineWidth().floatValue() <= 0f &&
-//			printImage.getLineBox().getRightPen().getLineWidth().floatValue() <= 0f
-//			)
-//		{
-//			if (printImage.getLinePen().getLineWidth().floatValue() > 0f)
-//			{
-//				exportPen(printImage.getLinePen(), printImage);
-//			}
-//		}
-//		else
-//		{
-//			/*   */
-//			exportBox(
-//				printImage.getLineBox(),
-//				printImage
-//				);
-//		}
+			}
+		}
+
+
+		if (
+			printImage.getLineBox().getTopPen().getLineWidth().floatValue() <= 0f &&
+			printImage.getLineBox().getLeftPen().getLineWidth().floatValue() <= 0f &&
+			printImage.getLineBox().getBottomPen().getLineWidth().floatValue() <= 0f &&
+			printImage.getLineBox().getRightPen().getLineWidth().floatValue() <= 0f
+			)
+		{
+			if (printImage.getLinePen().getLineWidth().floatValue() > 0f)
+			{
+				exportPen(printImage.getLinePen(), printImage);
+			}
+		}
+		else
+		{
+			/*   */
+			exportBox(
+				printImage.getLineBox(),
+				printImage
+				);
+		}
 	}
 
 	private class InternalImageProcessor
 	{
-//		private final JRPrintImage printImage;
-//		private final RenderersCache imageRenderersCache;
-//		
-//		private final int topPadding;
-//		private final int leftPadding;
-//		private final int bottomPadding;
-//		private final int rightPadding;
-//
-//		private final int availableImageWidth;
-//		private final int availableImageHeight;
-//		
-//		private InternalImageProcessor(JRPrintImage printImage)
-//		{
-//			this.printImage = printImage;
-//			this.imageRenderersCache = printImage.isUsingCache() ? renderersCache : new RenderersCache(getJasperReportsContext());
-//			
-//			topPadding = printImage.getLineBox().getTopPadding().intValue();
-//			leftPadding = printImage.getLineBox().getLeftPadding().intValue();
-//			bottomPadding = printImage.getLineBox().getBottomPadding().intValue();
-//			rightPadding = printImage.getLineBox().getRightPadding().intValue();
-//
-//			int tmpAvailableImageWidth = printImage.getWidth() - leftPadding - rightPadding;
-//			availableImageWidth = tmpAvailableImageWidth < 0 ? 0 : tmpAvailableImageWidth;
-//
-//			int tmpAvailableImageHeight = printImage.getHeight() - topPadding - bottomPadding;
-//			availableImageHeight = tmpAvailableImageHeight < 0 ? 0 : tmpAvailableImageHeight;
-//		}
-//		
-//		private InternalImageProcessorResult process(Renderable renderer) throws JRException, IOException, BadElementException
-//		{
-//			InternalImageProcessorResult imageProcessorResult = null;
-//
-//			if (renderer instanceof ResourceRenderer)
-//			{
-//				renderer = imageRenderersCache.getLoadedRenderer((ResourceRenderer)renderer);
-//			}
-//			
-//			if (renderer instanceof Graphics2DRenderable)
-//			{
-//				imageProcessorResult = processGraphics2D((Graphics2DRenderable)renderer);
-//			}
-//			else if (renderer instanceof DataRenderable)
-//			{
-//				boolean isSvgData = getRendererUtil().isSvgData((DataRenderable)renderer);
-//				
-//				if (isSvgData)
-//				{
-//					imageProcessorResult = 
-//						processGraphics2D(
-//							new WrappingSvgDataToGraphics2DRenderer((DataRenderable)renderer)
-//							);
-//				}
-//				else
-//				{
-//					switch(printImage.getScaleImageValue())
-//					{
-//						case CLIP :
-//						{
+		private final JRPrintImage printImage;
+		private final RenderersCache imageRenderersCache;
+		
+		private final int topPadding;
+		private final int leftPadding;
+		private final int bottomPadding;
+		private final int rightPadding;
+
+		private final int availableImageWidth;
+		private final int availableImageHeight;
+		
+		private InternalImageProcessor(JRPrintImage printImage)
+		{
+			this.printImage = printImage;
+			this.imageRenderersCache = printImage.isUsingCache() ? renderersCache : new RenderersCache(getJasperReportsContext());
+			
+			topPadding = printImage.getLineBox().getTopPadding().intValue();
+			leftPadding = printImage.getLineBox().getLeftPadding().intValue();
+			bottomPadding = printImage.getLineBox().getBottomPadding().intValue();
+			rightPadding = printImage.getLineBox().getRightPadding().intValue();
+
+			int tmpAvailableImageWidth = printImage.getWidth() - leftPadding - rightPadding;
+			availableImageWidth = tmpAvailableImageWidth < 0 ? 0 : tmpAvailableImageWidth;
+
+			int tmpAvailableImageHeight = printImage.getHeight() - topPadding - bottomPadding;
+			availableImageHeight = tmpAvailableImageHeight < 0 ? 0 : tmpAvailableImageHeight;
+		}
+		
+		private InternalImageProcessorResult process(Renderable renderer) throws JRException, IOException //, BadElementException
+		{
+			InternalImageProcessorResult imageProcessorResult = null;
+			
+			log.info("renderer instanceof ResourceRenderer ? "+(renderer instanceof ResourceRenderer));
+
+			if (renderer instanceof ResourceRenderer)
+			{
+				renderer = imageRenderersCache.getLoadedRenderer((ResourceRenderer)renderer);
+			}
+			
+			log.info("renderer instanceof Graphics2DRenderable ? "+ (renderer instanceof Graphics2DRenderable));
+			
+			if (renderer instanceof Graphics2DRenderable)
+			{
+				imageProcessorResult = processGraphics2D((Graphics2DRenderable)renderer);
+			}
+			else if (renderer instanceof DataRenderable)
+			{
+				boolean isSvgData = getRendererUtil().isSvgData((DataRenderable)renderer);
+				
+				if (isSvgData)
+				{
+					imageProcessorResult = 
+						processGraphics2D(
+							new WrappingSvgDataToGraphics2DRenderer((DataRenderable)renderer)
+							);
+				}
+				else
+				{
+					switch(printImage.getScaleImageValue())
+					{
+						case CLIP :
+						{
 //							imageProcessorResult = 
 //								processImageClip(
 //									new WrappingImageDataToGraphics2DRenderer((DataRenderable)renderer)
 //									);
-//							break;
-//						}
-//						case FILL_FRAME :
-//						{
-//							imageProcessorResult = processImageFillFrame(renderer.getId(), (DataRenderable)renderer);
-//							break;
-//						}
-//						case RETAIN_SHAPE :
-//						default :
-//						{
-//							imageProcessorResult = processImageRetainShape(renderer.getId(), (DataRenderable)renderer);
-//						}
-//					}
-//				}
-//			}
-//			else
-//			{
-//				throw 
-//					new JRException(
-//						RendererUtil.EXCEPTION_MESSAGE_KEY_RENDERABLE_MUST_IMPLEMENT_INTERFACE,
-//						new Object[]{
-//							renderer.getClass().getName(),
-//							DataRenderable.class.getName() 
-//								+ " or " + Graphics2DRenderable.class.getName() 
-//							}
-//						);
-//			}
-//
-//			return imageProcessorResult;
-//		}
-//		
-//		
+							break;
+						}
+						case FILL_FRAME :
+						{
+							imageProcessorResult = processImageFillFrame(renderer.getId(), (DataRenderable)renderer);
+							break;
+						}
+						case RETAIN_SHAPE :
+						default :
+						{
+							imageProcessorResult = processImageRetainShape(renderer.getId(), (DataRenderable)renderer);
+						}
+					}
+				}
+			}
+			else
+			{
+				throw 
+					new JRException(
+						RendererUtil.EXCEPTION_MESSAGE_KEY_RENDERABLE_MUST_IMPLEMENT_INTERFACE,
+						new Object[]{
+							renderer.getClass().getName(),
+							DataRenderable.class.getName() 
+								+ " or " + Graphics2DRenderable.class.getName() 
+							}
+						);
+			}
+
+			return imageProcessorResult;
+		}
+		
+		
 //		private InternalImageProcessorResult processImageClip(Graphics2DRenderable renderer) throws JRException, IOException, BadElementException
 //		{
 //			int normalWidth = availableImageWidth;
@@ -1775,91 +1773,93 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 //					yoffset
 //					);
 //		}
-//
-//		private InternalImageProcessorResult processImageFillFrame(String rendererId, DataRenderable renderer) throws JRException
-//		{
-//			Image image = null;
-//			
-//			if (printImage.isUsingCache() && loadedImagesMap.containsKey(rendererId))
-//			{
-//				image = loadedImagesMap.get(rendererId);
-//			}
-//			else
-//			{
-//				try
-//				{
+
+		private InternalImageProcessorResult processImageFillFrame(String rendererId, DataRenderable renderer) throws JRException
+		{
+			Image image = null;
+			
+			if (printImage.isUsingCache() && loadedImagesMap.containsKey(rendererId))
+			{
+				image = loadedImagesMap.get(rendererId);
+			}
+			else
+			{
+				try
+				{
+					image = new Image(ImageDataFactory.create(renderer.getData(jasperReportsContext)));
 //					image = Image.getInstance(renderer.getData(jasperReportsContext));
 //					imageTesterPdfContentByte.addImage(image, 10, 0, 0, 10, 0, 0);
-//				}
-//				catch (Exception e)
-//				{
-//					throw new JRException(e);
-//				}
-//
-//				if (printImage.isUsingCache())
-//				{
-//					loadedImagesMap.put(rendererId, image);
-//				}
-//			}
-//
-//			image.scaleAbsolute(availableImageWidth, availableImageHeight);
-//			
-//			return 
-//				new InternalImageProcessorResult(
-//					new Chunk(image, 0, 0), 
-//					image.getScaledWidth(), 
-//					image.getScaledHeight(),
-//					0,
-//					0
-//					);
-//		}
-//
-//		private InternalImageProcessorResult processImageRetainShape(String rendererId, DataRenderable renderer) throws JRException
-//		{
-//			Image image = null;
-//			
-//			if (printImage.isUsingCache() && loadedImagesMap.containsKey(rendererId))
-//			{
-//				image = loadedImagesMap.get(rendererId);
-//			}
-//			else
-//			{
-//				try
-//				{
-//					image = Image.getInstance(renderer.getData(jasperReportsContext));
-//					imageTesterPdfContentByte.addImage(image, 10, 0, 0, 10, 0, 0);
-//				}
-//				catch (Exception e)
-//				{
-//					throw new JRException(e);
-//				}
-//
-//				if (printImage.isUsingCache())
-//				{
-//					loadedImagesMap.put(rendererId, image);
-//				}
-//			}
-//
-//			image.scaleToFit(availableImageWidth, availableImageHeight);
-//
-//			int xoffset = (int)(ImageUtil.getXAlignFactor(printImage) * (availableImageWidth - image.getPlainWidth()));
-//			int yoffset = (int)(ImageUtil.getYAlignFactor(printImage) * (availableImageHeight - image.getPlainHeight()));
-//
-//			xoffset = (xoffset < 0 ? 0 : xoffset);
-//			yoffset = (yoffset < 0 ? 0 : yoffset);
-//			
-//			return 
-//				new InternalImageProcessorResult(
-//					new Chunk(image, 0, 0), 
-//					image.getScaledWidth(), 
-//					image.getScaledHeight(),
-//					xoffset,
-//					yoffset
-//					);
-//		}
-//		
-//		private InternalImageProcessorResult processGraphics2D(Graphics2DRenderable renderer) throws JRException, IOException
-//		{
+				}
+				catch (Exception e)
+				{
+					throw new JRException(e);
+				}
+
+				if (printImage.isUsingCache())
+				{
+					loadedImagesMap.put(rendererId, image);
+				}
+			}
+
+			image.scaleAbsolute(availableImageWidth, availableImageHeight);
+			
+			return 
+				new InternalImageProcessorResult(
+					image, 
+					image.getImageScaledWidth(), 
+					image.getImageScaledHeight(),
+					0,
+					0
+					);
+		}
+
+		private InternalImageProcessorResult processImageRetainShape(String rendererId, DataRenderable renderer) throws JRException
+		{
+			Image image = null;
+			
+			if (printImage.isUsingCache() && loadedImagesMap.containsKey(rendererId))
+			{
+				image = loadedImagesMap.get(rendererId);
+			}
+			else
+			{
+				try
+				{
+					image = new Image(ImageDataFactory.create(renderer.getData(jasperReportsContext)));
+					//image = Image.getInstance(renderer.getData(jasperReportsContext));
+					//imageTesterPdfContentByte.addImage(image, 10, 0, 0, 10, 0, 0);
+				}
+				catch (Exception e)
+				{
+					throw new JRException(e);
+				}
+
+				if (printImage.isUsingCache())
+				{
+					loadedImagesMap.put(rendererId, image);
+				}
+			}
+
+			image.scaleToFit(availableImageWidth, availableImageHeight);
+
+			int xoffset = (int)(ImageUtil.getXAlignFactor(printImage) * (availableImageWidth - image.getImageWidth()));
+			int yoffset = (int)(ImageUtil.getYAlignFactor(printImage) * (availableImageHeight - image.getImageHeight()));
+
+			xoffset = (xoffset < 0 ? 0 : xoffset);
+			yoffset = (yoffset < 0 ? 0 : yoffset);
+			
+			return 
+				new InternalImageProcessorResult(
+					image, 
+					image.getImageScaledWidth(), 
+					image.getImageScaledHeight(),
+					xoffset,
+					yoffset
+					);
+		}
+		
+		private InternalImageProcessorResult processGraphics2D(Graphics2DRenderable renderer) throws JRException, IOException
+		{
 //			int xoffset = 0;
 //			int yoffset = 0;
 //
@@ -1977,31 +1977,32 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 //			pdfWriter.releaseTemplate(template);
 //			
 //			return result;
-//		}
+			return null;
+		}
 	}
 
 	private class InternalImageProcessorResult
 	{
-//		private final Chunk chunk;
-//		private final float scaledWidth;
-//		private final float scaledHeight;
-//		private final int xoffset;
-//		private final int yoffset;
-//		
-//		private InternalImageProcessorResult(
-//				Chunk chunk,
-//				float scaledWidth,
-//				float scaledHeight,
-//				int xoffset,
-//				int yoffset
-//			)
-//		{
-//			this.chunk = chunk;
-//			this.scaledWidth = scaledWidth;
-//			this.scaledHeight = scaledHeight;
-//			this.xoffset = xoffset;
-//			this.yoffset = yoffset;
-//		}
+		private final Image image;
+		private final float scaledWidth;
+		private final float scaledHeight;
+		private final int xoffset;
+		private final int yoffset;
+		
+		private InternalImageProcessorResult(
+				Image image,
+				float scaledWidth,
+				float scaledHeight,
+				int xoffset,
+				int yoffset
+			)
+		{
+			this.image = image;
+			this.scaledWidth = scaledWidth;
+			this.scaledHeight = scaledHeight;
+			this.xoffset = xoffset;
+			this.yoffset = yoffset;
+		}
 	}
 
 
