@@ -81,11 +81,15 @@ public class SimplePdfTextRenderer extends AbstractPdfTextRenderer
 				- topPadding
 				- verticalAlignOffset
 				- text.getLeadingOffset(),
-			x + width - rightPadding,
+			x + width - rightPadding - (x + leftPadding),
 			pdfExporter.getCurrentPageFormat().getPageHeight()
 				- y
 				- height
-				+ bottomPadding
+				+ bottomPadding - (pdfExporter.getCurrentPageFormat().getPageHeight()
+				- y
+				- topPadding
+				- verticalAlignOffset
+				- text.getLeadingOffset())
 			);
 		
 		Paragraph paragraph = getPhrase(styledText, text);
