@@ -86,6 +86,7 @@ import com.itextpdf.kernel.pdf.canvas.PdfCanvasConstants.LineCapStyle;
 import com.itextpdf.kernel.pdf.navigation.PdfDestination;
 import com.itextpdf.layout.Canvas;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.Style;
 import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Text;
@@ -447,7 +448,7 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 
 		@Override
 		public PdfDocument getPdfDocument() {
-			return pdfDoc;
+			return pdfDocument;
 		}
 		
 //		@Override
@@ -462,7 +463,7 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 	 */
 //	protected Document document;
 	protected PdfCanvas pdfCanvas;
-	protected PdfDocument pdfDoc;
+	protected PdfDocument pdfDocument;
 //	protected PdfWriter pdfWriter;
 
 	protected Document imageTesterDocument;
@@ -615,11 +616,9 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 		this.permissions = getIntegerPermissions(configuration.getAllowedPermissions()) & (~getIntegerPermissions(configuration.getDeniedPermissions()));
 		crtDocumentPageNumber = 0;
 		
-		awtIgnoreMissingFont = getPropertiesUtil().getBooleanProperty(
-				JRStyledText.PROPERTY_AWT_IGNORE_MISSING_FONT);//FIXMECONTEXT replace with getPropertiesUtil in all exporters
+		awtIgnoreMissingFont = getPropertiesUtil().getBooleanProperty(JRStyledText.PROPERTY_AWT_IGNORE_MISSING_FONT);//FIXMECONTEXT replace with getPropertiesUtil in all exporters
 		
-		glyphRendererAddActualText = propertiesUtil.getBooleanProperty( 
-				PdfReportConfiguration.PROPERTY_GLYPH_RENDERER_ADD_ACTUAL_TEXT, false);
+		glyphRendererAddActualText = propertiesUtil.getBooleanProperty(PdfReportConfiguration.PROPERTY_GLYPH_RENDERER_ADD_ACTUAL_TEXT, false);
 		
 //		if (glyphRendererAddActualText && !tagHelper.isTagged && PdfGlyphRenderer.supported())
 //		{
@@ -773,7 +772,7 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 			vp.setDisplayDocTitle(true);
 		}
 		
-		pdfDoc = new PdfDocument(new PdfWriter(os, wp));
+		pdfDocument = new PdfDocument(new PdfWriter(os, wp));
 		
 		// BEGIN: PDF/A support
 		PdfaConformanceEnum pdfaConformance = configuration.getPdfaConformance();
@@ -790,7 +789,7 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 	                    RepositoryUtil.getInstance(jasperReportsContext).getInputStreamFromLocation(iccProfilePath));
 						
 			}
-			pdfDoc = new PdfADocument(new PdfWriter(os, wp), PdfAConformanceLevel.PDF_A_1A, intent);
+			pdfDocument = new PdfADocument(new PdfWriter(os, wp), PdfAConformanceLevel.PDF_A_1A, intent);
 			gotPdfa = true;
 		} else if (PdfaConformanceEnum.PDFA_1B == pdfaConformance)
 		{
@@ -804,7 +803,7 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 	                    RepositoryUtil.getInstance(jasperReportsContext).getInputStreamFromLocation(iccProfilePath));
 						
 			}
-			pdfDoc = new PdfADocument(new PdfWriter(os, wp), PdfAConformanceLevel.PDF_A_1B, intent);
+			pdfDocument = new PdfADocument(new PdfWriter(os, wp), PdfAConformanceLevel.PDF_A_1B, intent);
 
 			gotPdfa = true;
 		}
@@ -847,17 +846,17 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 		}
 		*/
 		
-		pdfDoc.getCatalog().setViewerPreferences(vp);
+		pdfDocument.getCatalog().setViewerPreferences(vp);
 		//accessibility check: setting the document primary language
 		String language = configuration.getTagLanguage();
 		if(language != null){
-			pdfDoc.getCatalog().setLang(new PdfString(language));			
+			pdfDocument.getCatalog().setLang(new PdfString(language));			
 		}
 		
 		PdfDocument imageTesterPdfDoc = new PdfDocument(new PdfWriter(new NullOutputStream()));
 		//imageTesterPdfDoc.getCatalog().setViewerPreferences();
 		
-		PdfDocumentInfo info = pdfDoc.getDocumentInfo();
+		PdfDocumentInfo info = pdfDocument.getDocumentInfo();
 				
 		// Title
 		String title = configuration.getMetadataTitle();
@@ -892,16 +891,6 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 		info.setCreator(creator);
 
 		
-		/*
-		document = new Document(pdfDoc, new PageSize(pageFormat.getPageWidth(), pageFormat.getPageHeight()));
-		imageTesterDocument = new Document(imageTesterPdfDoc, new PageSize(10, 10));
-		*/
-		
-		pdfCanvas = new PdfCanvas(pdfDoc.addNewPage());
-		Rectangle rectangle = new Rectangle(pageFormat.getPageWidth(), pageFormat.getPageHeight());
-		pdfCanvas.rectangle(rectangle);
-		pdfCanvas.stroke();
-		
 		
 		boolean closeDocuments = true;
 		try
@@ -913,7 +902,7 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 			
 			
 			// TODO no tag Now
-			//tagHelper.setPdfDocument(pdfDoc);
+			//tagHelper.setPdfDocument(pdfDocument);
 			
 			
 //          TODO maybe use Style			
@@ -955,9 +944,7 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 			for (reportIndex = 0; reportIndex < items.size(); reportIndex++)
 			{
 				ExporterInputItem item = items.get(reportIndex);
-
 				setCurrentExporterInputItem(item);
-				
 				pageFormat = jasperPrint.getPageFormat(0);
 
 				// NO NEED in itext7
@@ -969,7 +956,7 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 					if (items.size() > 1)
 					{
 						//document.newPage();
-						pdfDoc.addNewPage();
+						pdfDocument.addNewPage();
 
 						if( isCreatingBatchModeBookmarks )
 						{
@@ -979,9 +966,7 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 					}
 					
 					PdfReportConfiguration lcItemConfiguration = getCurrentItemConfiguration();
-
 					boolean sizePageToContent = lcItemConfiguration.isSizePageToContent();
-					
 					PrintPageFormat oldPageFormat = null;
 
 					PageRange pageRange = getPageRange();
@@ -1008,14 +993,12 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 						}
 						*/
 
-						pdfCanvas = new PdfCanvas(pdfDoc.addNewPage());
-						rectangle = new Rectangle(pageFormat.getPageWidth(), pageFormat.getPageHeight());
+						pdfCanvas = new PdfCanvas(pdfDocument.addNewPage());
+						Rectangle rectangle = new Rectangle(pageFormat.getPageWidth(), pageFormat.getPageHeight());
 						pdfCanvas.rectangle(rectangle);
 						pdfCanvas.stroke();
 						
-						
-						// FIXME
-						//canvas.setLineCap(2);//PdfContentByte.LINE_CAP_PROJECTING_SQUARE since iText 1.02b
+						pdfCanvas.setLineCapStyle(LineCapStyle.PROJECTING_SQUARE);
 
 						// FIXME
 						//writePageAnchor(pageIndex);
@@ -1030,19 +1013,17 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 				}
 				else
 				{
-					pdfCanvas = new PdfCanvas(pdfDoc.addNewPage());
-					rectangle = new Rectangle(pageFormat.getPageWidth(), pageFormat.getPageHeight());
+					pdfCanvas = new PdfCanvas(pdfDocument.addNewPage());
+					Rectangle rectangle = new Rectangle(pageFormat.getPageWidth(), pageFormat.getPageHeight());
 					pdfCanvas.rectangle(rectangle);
 					pdfCanvas.stroke();
-					//pdfCanvas = new Canvas(pdfCanvas, pdfDoc, rectangle);
 					
-					// FIXME
-					// canvas.setLiteral("\n");
+					pdfCanvas.writeLiteral("\n");
 				}
 			}
 
 			closeDocuments = false;
-			pdfDoc.close();
+			pdfDocument.close();
 			//imageTesterDocument.close();
 		}
 		catch(DocumentException e)
@@ -1067,7 +1048,7 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 			{
 				try
 				{
-					pdfDoc.close();
+					pdfDocument.close();
 				}
 				catch (Exception e)
 				{
@@ -2218,9 +2199,9 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 	protected Text getChunk(Map<Attribute,Object> attributes, String text, Locale locale)
 	{
 		// underline and strikethrough are set on the chunk below
-		PdfFont font = getFont(attributes, locale, false);
+		Style fontStyle = getFont(attributes, locale, false);
 
-		Text chunk = new Text(text).setFont(font);
+		Text chunk = new Text(text).addStyle(fontStyle);
 		
 		if (hasUnderline(attributes))
 		{
@@ -2286,7 +2267,7 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 	 * @param setFontLines whether to set underline and strikethrough as font style
 	 * @return the PDF font for the specified attributes
 	 */
-	protected PdfFont getFont(Map<Attribute,Object> attributes, Locale locale, boolean setFontLines)
+	protected Style getFont(Map<Attribute,Object> attributes, Locale locale, boolean setFontLines)
 	{
 		JRFont jrFont = new JRBaseFont(attributes);
 
@@ -2304,6 +2285,7 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 			fontSizeScale = 2f / 3;
 		}
 		
+		Style fontStyle = new Style();
 		PdfFont font = null;
 		String pdfFontName = null;
 		String pdfEncoding = null;
@@ -2394,40 +2376,10 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 			isPdfSimulatedItalic = jrFont.isItalic() && ((pdfFontStyle & java.awt.Font.ITALIC) == 0); 
 		}
 
-		/*
-		int pdfFontStyle = (isPdfSimulatedBold ? Font.BOLD : 0)
-				| (isPdfSimulatedItalic ? Font.ITALIC : 0);
-		
-		if (setFontLines)
-		{
-			pdfFontStyle |= (jrFont.isUnderline() ? Font.UNDERLINE : 0)
-					| (jrFont.isStrikeThrough() ? Font.STRIKETHRU : 0);
-		}
-		*/
-		
 		try
 		{
-			
 			font = PdfFontFactory.createFont(pdfFontName, pdfEncoding, isPdfEmbedded);
 			
-			/*
-			font = PdfFontFactory.getFont(
-				pdfFontName,
-				pdfEncoding,
-				isPdfEmbedded,
-				jrFont.getFontsize() * fontSizeScale,
-				pdfFontStyle,
-				forecolor
-				);
-			*/
-			// check if FontFactory didn't find the font
-			// TODO ??
-			/*
-			if (font != null && font..getBaseFont() == null && font.getFamily() == Font.UNDEFINED)
-			{
-				font = null;
-			}
-			*/
 		}
 		catch(Exception e)
 		{
@@ -2436,58 +2388,41 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 
 		if (font == null)
 		{
-			byte[] bytes = null;
 
 			try
 			{
-				bytes = RepositoryUtil.getInstance(jasperReportsContext).getBytesFromLocation(pdfFontName);
-			}
-			catch(JRException e)
-			{
-				throw //NOPMD
-					new JRRuntimeException(
-						EXCEPTION_MESSAGE_KEY_FONT_LOADING_ERROR,
-						new Object[]{pdfFontName, pdfEncoding, isPdfEmbedded},
-						initialException);
-			}
-
-			
-			//PdfFont baseFont = null;
-
-			try
-			{
-				//baseFont = PdfFontFactory.createFont();
-				// TODO
-				/*
-					BaseFont.createFont(
-						pdfFontName,
-						pdfEncoding,
-						isPdfEmbedded,
-						true,
-						bytes,
-						null
-						);
-				*/
 				font = PdfFontFactory.createFont();
 			}
 			catch(IOException e)
 			{
 				throw new JRRuntimeException(e);
 			}
-
 			
-			/*
-			font =
-				new Font(
-					baseFont,
-					jrFont.getFontsize() * fontSizeScale,
-					pdfFontStyle,
-					forecolor
-					);
-			*/
+		}
+		
+		fontStyle.setFont(font)
+			.setFontSize(jrFont.getFontsize() * fontSizeScale)
+			.setFontColor(new DeviceRgb(forecolor.getRed(), forecolor.getGreen(), forecolor.getBlue()));
+
+		if(isPdfSimulatedBold) {
+			fontStyle.setBold();
+		}
+		
+		if(isPdfSimulatedItalic) {
+			fontStyle.setItalic();
+		}
+		
+		if(jrFont.isUnderline()) {
+			fontStyle.setUnderline();
+		}
+		
+		if(jrFont.isStrikeThrough()) {
+			fontStyle.setLineThrough();
 		}
 
-		return font;
+		
+
+		return fontStyle;
 	}
 
 
@@ -2504,7 +2439,7 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 		}
 		
 		AbstractPdfTextRenderer textRenderer = getTextRenderer(text, styledText);
-		textRenderer.initialize(this, pdfCanvas, pdfDoc, text, styledText, getOffsetX(), getOffsetY());
+		textRenderer.initialize(this, pdfCanvas, pdfDocument, text, styledText, getOffsetX(), getOffsetY());
 
 		double angle = 0;
 
@@ -2675,7 +2610,7 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 		
 		
 		
-		PdfFont pdfFont = getFont(fontAttributes, fontKey.locale, false);
+		Style fontStyle = getFont(fontAttributes, fontKey.locale, false);
 		PdfFont baseFont = null;
 		try {
 			baseFont = PdfFontFactory.createFont();
@@ -3309,7 +3244,7 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 		{
 		}
 
-		public PdfFont awtToPdf(java.awt.Font font)
+		public Style awtToPdf(java.awt.Font font)
 		{
 			// not setting underline and strikethrough as we only need the base font.
 			// underline and strikethrough will not work here because PdfGraphics2D
