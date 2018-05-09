@@ -10,7 +10,10 @@ formats including HTML, PDF, Excel, OpenOffice and Word.
 
 Now *ONLY* SimplePdfTextRender.java is work
 
-- Image is not supported.
+- Graphics2D is not supported
+- TagHelper is not supported
+- Bookmark is not supported
+- Anchor is not supported
 
 
 ## You should apply the iText license key
