@@ -23,10 +23,10 @@
  */
 package net.sf.jasperreports.export.type;
 
+import com.itextpdf.kernel.pdf.EncryptionConstants;
+
 import net.sf.jasperreports.engine.type.EnumUtil;
 import net.sf.jasperreports.engine.type.NamedEnum;
-
-import com.lowagie.text.pdf.PdfWriter;
 
 
 /**
@@ -37,53 +37,53 @@ public enum PdfPermissionsEnum implements NamedEnum
 	/**
 	 * All user permissions
 	 */
-	ALL(PdfWriter.ALLOW_PRINTING 
-			| PdfWriter.ALLOW_MODIFY_CONTENTS 
-			| PdfWriter.ALLOW_COPY 
-			| PdfWriter.ALLOW_MODIFY_ANNOTATIONS 
-			| PdfWriter.ALLOW_FILL_IN 
-			| PdfWriter.ALLOW_SCREENREADERS 
-			| PdfWriter.ALLOW_ASSEMBLY 
-			|PdfWriter.ALLOW_DEGRADED_PRINTING, "ALL"),
+	ALL(EncryptionConstants.ALLOW_PRINTING 
+			| EncryptionConstants.ALLOW_MODIFY_CONTENTS 
+			| EncryptionConstants.ALLOW_COPY 
+			| EncryptionConstants.ALLOW_MODIFY_ANNOTATIONS 
+			| EncryptionConstants.ALLOW_FILL_IN 
+			| EncryptionConstants.ALLOW_SCREENREADERS 
+			| EncryptionConstants.ALLOW_ASSEMBLY 
+			|EncryptionConstants.ALLOW_DEGRADED_PRINTING, "ALL"),
 	/**
 	 * Assembly permission
 	 */
-	ASSEMBLY(PdfWriter.ALLOW_ASSEMBLY, "ASSEMBLY"),
+	ASSEMBLY(EncryptionConstants.ALLOW_ASSEMBLY, "ASSEMBLY"),
 	
 	/**
 	 * Copy permission
 	 */
-	COPY(PdfWriter.ALLOW_COPY, "COPY"),
+	COPY(EncryptionConstants.ALLOW_COPY, "COPY"),
 	
 	/**
 	 * Degraded printing permission
 	 */
-	DEGRADED_PRINTING(PdfWriter.ALLOW_DEGRADED_PRINTING, "DEGRADED_PRINTING"),
+	DEGRADED_PRINTING(EncryptionConstants.ALLOW_DEGRADED_PRINTING, "DEGRADED_PRINTING"),
 	
 	/**
 	 * Fill in forms permission
 	 */
-	FILL_IN(PdfWriter.ALLOW_FILL_IN, "FILL_IN"),
+	FILL_IN(EncryptionConstants.ALLOW_FILL_IN, "FILL_IN"),
 	
 	/**
 	 * Modify annotations permission
 	 */
-	MODIFY_ANNOTATIONS(PdfWriter.ALLOW_MODIFY_ANNOTATIONS, "MODIFY_ANNOTATIONS"),
+	MODIFY_ANNOTATIONS(EncryptionConstants.ALLOW_MODIFY_ANNOTATIONS, "MODIFY_ANNOTATIONS"),
 	
 	/**
 	 * Modify contents permission
 	 */
-	MODIFY_CONTENTS(PdfWriter.ALLOW_MODIFY_CONTENTS, "MODIFY_CONTENTS"),
+	MODIFY_CONTENTS(EncryptionConstants.ALLOW_MODIFY_CONTENTS, "MODIFY_CONTENTS"),
 	
 	/**
 	 * Print permission
 	 */
-	PRINTING(PdfWriter.ALLOW_PRINTING, "PRINTING"),
+	PRINTING(EncryptionConstants.ALLOW_PRINTING, "PRINTING"),
 	
 	/**
 	 * Screen readers permission
 	 */
-	SCREENREADERS(PdfWriter.ALLOW_SCREENREADERS, "SCREENREADERS");
+	SCREENREADERS(EncryptionConstants.ALLOW_SCREENREADERS, "SCREENREADERS");
 	
 	
 	/**
