@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.sf.jasperreports</groupId>
 	<artifactId>jasperreports</artifactId>
-	<version>6.6.0-iText7</version>
+	<version>6.6.0-iText7.SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>JasperReports</name>
 	<url>http://jasperreports.sourceforge.net</url>
@@ -646,4 +646,15 @@
 		    <version>2.1</version>
 		</dependency>
 	</dependencies>
+
+	<distributionManagement>
+		<repository>
+			<id>releases</id>
+			<url>http://svn.softleader.com.tw:8084/repository/maven-releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<url>http://svn.softleader.com.tw:8084/repository/maven-snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>
