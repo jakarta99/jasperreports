@@ -29,8 +29,10 @@ import java.text.CharacterIterator;
 import net.sf.jasperreports.engine.JRRuntimeException;
 import net.sf.jasperreports.export.PdfReportConfiguration;
 
-import com.lowagie.text.SplitCharacter;
-import com.lowagie.text.pdf.PdfChunk;
+import com.itextpdf.io.font.otf.GlyphLine;
+import com.itextpdf.layout.splitting.ISplitCharacters;
+//import com.lowagie.text.SplitCharacter;
+//import com.lowagie.text.pdf.PdfChunk;
 
 
 /**
@@ -41,13 +43,13 @@ import com.lowagie.text.pdf.PdfChunk;
  * 
  * @see PdfReportConfiguration#isForceLineBreakPolicy()
  */
-public class BreakIteratorSplitCharacter implements SplitCharacter
+public class BreakIteratorSplitCharacter implements ISplitCharacters
 {
 
-	private char[] chars;
-	private int start, end;
-	private boolean[] boundary;
-	private int lastBoundary;
+//	private char[] chars;
+//	private int start, end;
+//	private boolean[] boundary;
+//	private int lastBoundary;
 	private final BreakIterator breakIter;
 	
 	public BreakIteratorSplitCharacter()
@@ -59,7 +61,23 @@ public class BreakIteratorSplitCharacter implements SplitCharacter
 	{
 		this.breakIter = breakIter;
 	}
+	
 
+	@Override
+	public boolean isSplitCharacter(GlyphLine text, int glyphPos) {
+		if (!text.get(glyphPos).hasValidUnicode()) {
+            return false;
+        }
+        int charCode = text.get(glyphPos).getUnicode();
+        return (charCode <= ' ' || charCode == '-' || charCode == '\u2010'
+                || (charCode >= 0x2002 && charCode <= 0x200b)
+                || (charCode >= 0x2e80 && charCode < 0xd7a0)
+                || (charCode >= 0xf900 && charCode < 0xfb00)
+                || (charCode >= 0xfe30 && charCode < 0xfe50)
+                || (charCode >= 0xff61 && charCode < 0xffa0));
+	}
+	
+/*
 	@Override
 	public boolean isSplitCharacter(int startIdx, int current, int endIdx, char[] cc, PdfChunk[] ck)
 	{
@@ -230,5 +248,6 @@ public class BreakIteratorSplitCharacter implements SplitCharacter
 			}
 		}
 	}
+*/
 
 }
