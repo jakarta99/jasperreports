@@ -8,7 +8,7 @@ formats including HTML, PDF, Excel, OpenOffice and Word.
 
 ## iText 7 support version
 
-Now *ONLY* SimplePdfTextRender.java is work
+Now *ONLY* SimplePdfTextRender.java works on 2018/May
 
 - Graphics2D is not supported
 - TagHelper is not supported
