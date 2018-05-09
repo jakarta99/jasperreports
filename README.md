@@ -25,3 +25,14 @@ And use the following codes in your main method.
 import com.itextpdf.licensekey.LicenseKey;
 
 LicenseKey.loadLicenseFile("c:\\itext-license.xml");
+
+## iReport Setting
+
+You can download the Khmer unicode JARs from https://www.sbbic.org/tag/download-khmer-unicode-fonts/
+
+And in iReport Font install what you wanna use (check pdf-embedded), to pick the fonts and to export font-ext-khmer.jar into your build libs.
+
+Please choose PDF-Encoding is "Identity-H", you can generate Khmer text now.
+
+
+
