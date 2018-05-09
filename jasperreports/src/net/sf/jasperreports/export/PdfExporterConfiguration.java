@@ -23,7 +23,7 @@
  */
 package net.sf.jasperreports.export;
 
-import com.lowagie.text.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.EncryptionConstants;
 
 import net.sf.jasperreports.annotations.properties.Property;
 import net.sf.jasperreports.annotations.properties.PropertyScope;
@@ -46,18 +46,25 @@ import net.sf.jasperreports.properties.PropertyConstants;
  */
 public interface PdfExporterConfiguration extends ExporterConfiguration
 {
+	
+	
+	
+	
 	/**
 	 * Integer property that contains all permissions for the generated PDF document
 	 */
 	public static final Integer ALL_PERMISSIONS = 
-			PdfWriter.ALLOW_ASSEMBLY 
-			| PdfWriter.ALLOW_COPY
-			| PdfWriter.ALLOW_DEGRADED_PRINTING
-			| PdfWriter.ALLOW_FILL_IN
-			| PdfWriter.ALLOW_MODIFY_ANNOTATIONS
-			| PdfWriter.ALLOW_MODIFY_CONTENTS
-			| PdfWriter.ALLOW_PRINTING
-			| PdfWriter.ALLOW_SCREENREADERS;
+			EncryptionConstants.ALLOW_ASSEMBLY 
+			| EncryptionConstants.ALLOW_COPY
+			| EncryptionConstants.ALLOW_DEGRADED_PRINTING
+			| EncryptionConstants.ALLOW_FILL_IN
+			| EncryptionConstants.ALLOW_MODIFY_ANNOTATIONS
+			| EncryptionConstants.ALLOW_MODIFY_CONTENTS
+			| EncryptionConstants.ALLOW_PRINTING
+			| EncryptionConstants.ALLOW_SCREENREADERS;
+
+	
+	
 	
 	/**
 	 * Property whose value is used as default state of the {@link #isCreatingBatchModeBookmarks()} export configuration flag.
