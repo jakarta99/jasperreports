@@ -25,14 +25,19 @@ package net.sf.jasperreports.engine.export;
 
 import java.text.AttributedString;
 
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.pdf.ColumnText;
-import com.lowagie.text.pdf.PdfWriter;
+import com.itextpdf.kernel.geom.Rectangle;
+import com.itextpdf.layout.Canvas;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.property.BaseDirection;
+import com.itextpdf.layout.property.TextAlignment;
+
+//import com.lowagie.text.DocumentException;
+//import com.lowagie.text.Element;
+//import com.lowagie.text.Phrase;
+//import com.lowagie.text.pdf.ColumnText;
+//import com.lowagie.text.pdf.PdfWriter;
 
 import net.sf.jasperreports.engine.JRPrintText;
-import net.sf.jasperreports.engine.JRRuntimeException;
 import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.type.RunDirectionEnum;
 import net.sf.jasperreports.engine.util.JRStyledText;
@@ -55,7 +60,7 @@ public class SimplePdfTextRenderer extends AbstractPdfTextRenderer
 	/**
 	 *
 	 */
-	protected Phrase getPhrase(JRStyledText styledText, JRPrintText textElement)
+	protected Paragraph getPhrase(JRStyledText styledText, JRPrintText textElement)
 	{
 		String text = styledText.getText();
 
@@ -68,39 +73,32 @@ public class SimplePdfTextRenderer extends AbstractPdfTextRenderer
 	@Override
 	public void render()
 	{
-		ColumnText colText = new ColumnText(pdfContentByte);
-		colText.setSimpleColumn(
-			getPhrase(styledText, text),
-			x + leftPadding,
-			pdfExporter.getCurrentPageFormat().getPageHeight()
+		
+		Rectangle rectangle = new Rectangle(
+				x + leftPadding,
+				pdfExporter.getCurrentPageFormat().getPageHeight()
 				- y
 				- topPadding
 				- verticalAlignOffset
 				- text.getLeadingOffset(),
-				//+ text.getLineSpacingFactor() * text.getFont().getSize(),
 			x + width - rightPadding,
 			pdfExporter.getCurrentPageFormat().getPageHeight()
 				- y
 				- height
-				+ bottomPadding,
-			0,//text.getLineSpacingFactor(),// * text.getFont().getSize(),
-			horizontalAlignment == Element.ALIGN_JUSTIFIED_ALL ? Element.ALIGN_JUSTIFIED : horizontalAlignment
+				+ bottomPadding
 			);
-
-		colText.setLeading(0, text.getLineSpacingFactor());// * text.getFont().getSize());
-		colText.setRunDirection(
-			text.getRunDirectionValue() == RunDirectionEnum.LTR
-			? PdfWriter.RUN_DIRECTION_LTR : PdfWriter.RUN_DIRECTION_RTL
-			);
-
-		try
-		{
-			colText.go();
-		}
-		catch (DocumentException e)
-		{
-			throw new JRRuntimeException(e);
-		}
+		
+		Paragraph paragraph = getPhrase(styledText, text);
+		paragraph
+			.setTextAlignment( (horizontalAlignment == TextAlignment.JUSTIFIED_ALL)? TextAlignment.JUSTIFIED : horizontalAlignment )
+			.setFixedLeading(text.getLineSpacingFactor())
+			.setBaseDirection((text.getRunDirectionValue() == RunDirectionEnum.LTR) ? BaseDirection.LEFT_TO_RIGHT : BaseDirection.RIGHT_TO_LEFT);
+		
+		
+		Canvas canvas = new Canvas(pdfCanvas, pdfDocument, rectangle);
+		canvas.add(paragraph);
+		canvas.close();
+		
 	}
 
 
