@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.sf.jasperreports</groupId>
 	<artifactId>jasperreports</artifactId>
-	<version>6.6.0-SNAPSHOT</version>
+	<version>6.6.0-iText7</version>
 	<packaging>jar</packaging>
 	<name>JasperReports</name>
 	<url>http://jasperreports.sourceforge.net</url>
@@ -234,6 +234,7 @@
 			</exclusions>
 			<optional>true</optional>
 		</dependency>
+		<!-- 
 		<dependency>
 			<groupId>com.lowagie</groupId>
 			<artifactId>itext</artifactId>
@@ -250,6 +251,67 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		-->
+		<!-- iText 7 -->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>kernel</artifactId>
+			<version>${itext.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>io</artifactId>
+			<version>${itext.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>layout</artifactId>
+			<version>${itext.version}</version>
+		</dependency>
+		<!-- only needed for forms -->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>forms</artifactId>
+			<version>${itext.version}</version>
+		</dependency>
+		<!-- only needed for PDF/A -->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>pdfa</artifactId>
+			<version>${itext.version}</version>
+		</dependency>
+		<!-- only needed for digital signatures -->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>sign</artifactId>
+			<version>${itext.version}</version>
+		</dependency>
+		<!-- only needed for barcodes -->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>barcodes</artifactId>
+			<version>${itext.version}</version>
+		</dependency>
+		<!-- only needed for Asian fonts -->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>font-asian</artifactId>
+			<version>${itext.version}</version>
+		</dependency>
+		<!-- only needed for hyphenation -->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>hyph</artifactId>
+			<version>${itext.version}</version>
+		</dependency>
+		<!-- only needed for pdfCalligraph (Khmer support)-->
+
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>typography</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>com.adobe.xmp</groupId>
 			<artifactId>xmpcore</artifactId>
@@ -499,13 +561,11 @@
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
 			<version>2.8.2</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-jcl</artifactId>
 			<version>2.8.2</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
@@ -573,6 +633,11 @@
 			<version>6.5.1</version>
 			<scope>compile</scope>
 			<optional>true</optional>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-slf4j-impl</artifactId>
+		    <version>2.1</version>
 		</dependency>
 	</dependencies>
 </project>
