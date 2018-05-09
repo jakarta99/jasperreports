@@ -2587,23 +2587,25 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 	{
 		AbstractPdfTextRenderer textRenderer;
 		
-		if (toUseGlyphRenderer(text)
-				&& PdfGlyphRenderer.supported()
-				&& canUseGlyphRendering(text, styledText))
-		{
-			textRenderer = new PdfGlyphRenderer(jasperReportsContext, awtIgnoreMissingFont,
-			glyphRendererAddActualText );
+//		if (toUseGlyphRenderer(text)
+//				&& PdfGlyphRenderer.supported()
+//				&& canUseGlyphRendering(text, styledText))
+//		{
 //			textRenderer = new PdfGlyphRenderer(jasperReportsContext, awtIgnoreMissingFont,
-//					glyphRendererAddActualText && !tagHelper.isTagged);
-		}
-		else if (text.getLeadingOffset() == 0)
-		{
-			textRenderer = new PdfTextRenderer(jasperReportsContext, awtIgnoreMissingFont);
-		}
-		else
-		{
-			textRenderer = new SimplePdfTextRenderer(jasperReportsContext, awtIgnoreMissingFont);//FIXMETAB optimize this
-		}
+//			glyphRendererAddActualText );
+////			textRenderer = new PdfGlyphRenderer(jasperReportsContext, awtIgnoreMissingFont,
+////					glyphRendererAddActualText && !tagHelper.isTagged);
+//		}
+//		else if (text.getLeadingOffset() == 0)
+//		{
+//			textRenderer = new PdfTextRenderer(jasperReportsContext, awtIgnoreMissingFont);
+//		}
+//		else
+//		{
+//			textRenderer = new SimplePdfTextRenderer(jasperReportsContext, awtIgnoreMissingFont);//FIXMETAB optimize this
+//		}
+		
+		textRenderer = new SimplePdfTextRenderer(jasperReportsContext, awtIgnoreMissingFont);//FIXMETAB optimize this
 		
 		return textRenderer;
 	}
