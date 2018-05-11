@@ -24,6 +24,9 @@
 package net.sf.jasperreports.engine.export;
 
 import java.text.AttributedString;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,8 +34,11 @@ import org.apache.commons.logging.LogFactory;
 import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.layout.Canvas;
 import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.layout.LayoutArea;
 import com.itextpdf.layout.property.BaseDirection;
 import com.itextpdf.layout.property.TextAlignment;
+import com.itextpdf.layout.renderer.CanvasRenderer;
+import com.itextpdf.layout.renderer.ParagraphRenderer;
 
 //import com.lowagie.text.DocumentException;
 //import com.lowagie.text.Element;
@@ -80,23 +86,26 @@ public class SimplePdfTextRenderer extends AbstractPdfTextRenderer
 	{
 		
 		float llx = x + leftPadding;
+		// 座標位置，不可能於 pageHeight
 		float lly = pdfExporter.getCurrentPageFormat().getPageHeight()
 				- y
 				- topPadding
-				- verticalAlignOffset
-				+ text.getHeight();
+				- verticalAlignOffset;
+//		log.debug("pdfExporter.getCurrentPageFormat().getPageHeight: " + pdfExporter.getCurrentPageFormat().getPageHeight()
+//				+ ", topPadding: " + topPadding
+//				+ ", verticalAlignOffset: " + verticalAlignOffset
+//				+ ", text.getTextHeight: " + text.getTextHeight()
+//				);
 		float rectWidth = x + width - rightPadding - (x + leftPadding);
-		float rectHeight = pdfExporter.getCurrentPageFormat().getPageHeight()
-				- y
-				- height
-				+ bottomPadding - (pdfExporter.getCurrentPageFormat().getPageHeight()
-				- y
-				- topPadding
-				- verticalAlignOffset
-				- text.getLeadingOffset()
-				//+ text.getHeight()
-				);
-		
+		float rectHeight = -text.getHeight() + text.getTextHeight() + verticalAlignOffset;
+//		log.debug("y: " + y
+//				+ ", height: " + height
+//				+ ", bottomPadding: " + bottomPadding
+//				+ ", pdfExporter.getCurrentPageFormat().getPageHeight(): " + pdfExporter.getCurrentPageFormat().getPageHeight()
+//				+ ", y: " + y
+//				+ ", topPadding: " + topPadding
+//				+ ", verticalAlignOffset: " + verticalAlignOffset
+//				+ ", text.getLeadingOffset(): " + text.getLeadingOffset());
 		log.debug("llx = "+ llx);
 		log.debug("lly = "+ lly);
 		log.debug("width = "+rectWidth);
@@ -105,16 +114,29 @@ public class SimplePdfTextRenderer extends AbstractPdfTextRenderer
 		
 		Rectangle rectangle = new Rectangle( llx, lly, rectWidth, rectHeight );
 		Paragraph paragraph = getPhrase(styledText, text);
+		
+//		log.debug("text= "+ styledText.getText());
+//		log.debug("text.getHeight: " + text.getHeight()
+//				+ ", text.getTextHeight: " + text.getTextHeight()
+//				+ ", text.getWidth: " + text.getWidth());
 		paragraph
 			.setTextAlignment( (horizontalAlignment == TextAlignment.JUSTIFIED_ALL)? TextAlignment.JUSTIFIED : horizontalAlignment )
 			.setFixedLeading(text.getLineSpacingFactor())
 			.setBaseDirection((text.getRunDirectionValue() == RunDirectionEnum.LTR) ? BaseDirection.LEFT_TO_RIGHT : BaseDirection.RIGHT_TO_LEFT);
 		
 		
+		paragraph.setNextRenderer(new ParagraphRenderer(paragraph) {
+	        @Override
+	        public List<Rectangle> initElementAreas(LayoutArea area) {
+	            List<Rectangle> list = new ArrayList<Rectangle>();
+	            list.add(rectangle);
+	            return list;
+	        }
+	    });
+		
 		Canvas canvas = new Canvas(pdfCanvas, pdfDocument, rectangle);
 		canvas.add(paragraph);
 		canvas.close();
-		
 	}
 
 
