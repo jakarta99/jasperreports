@@ -25,6 +25,9 @@ package net.sf.jasperreports.engine.export;
 
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,8 +35,11 @@ import org.apache.commons.logging.LogFactory;
 import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.layout.Canvas;
 import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.layout.LayoutArea;
 import com.itextpdf.layout.property.BaseDirection;
 import com.itextpdf.layout.property.TextAlignment;
+import com.itextpdf.layout.renderer.CanvasRenderer;
+import com.itextpdf.layout.renderer.ParagraphRenderer;
 
 //import com.lowagie.text.DocumentException;
 //import com.lowagie.text.Element;
@@ -89,8 +95,10 @@ public class SimplePdfTextRenderer extends AbstractPdfTextRenderer
 	{
 		/*
 		float llx = x + leftPadding;
+		// y 軸座標位置，不可能大於 pageHeight
 		float lly = pdfExporter.getCurrentPageFormat().getPageHeight()
 				- y
+<<<<<<< HEAD
 				//- topPadding
 				 - verticalAlignOffset
 				// - text.getLeadingOffset()
@@ -114,7 +122,7 @@ public class SimplePdfTextRenderer extends AbstractPdfTextRenderer
 		float rectWidth  = width ;
 		float rectHeight = height;
 		
-		log.debug("Draw text :"+text.getOriginalText());
+
 		log.debug("llx = "+ llx);
 		log.debug("lly = "+ lly);
 		log.debug("width = "+rectWidth);
@@ -137,11 +145,17 @@ public class SimplePdfTextRenderer extends AbstractPdfTextRenderer
 			//.setFixedLeading(text.getLineSpacingFactor())
 			.setBaseDirection((text.getRunDirectionValue() == RunDirectionEnum.LTR) ? BaseDirection.LEFT_TO_RIGHT : BaseDirection.RIGHT_TO_LEFT);
 		
+//		paragraph.setNextRenderer(new ParagraphRenderer(paragraph) {
+//	        @Override
+//	        public List<Rectangle> initElementAreas(LayoutArea area) {
+//	            List<Rectangle> list = new ArrayList<Rectangle>();
+//	            list.add(rectangle);
+//	            return list;
+//	        }
+//	    });
 		canvas.add(paragraph);
 		
 		canvas.close();
-		
-		
 	}
 
 
