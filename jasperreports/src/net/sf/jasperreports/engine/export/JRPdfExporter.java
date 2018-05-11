@@ -634,10 +634,12 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 
 		PdfReportConfiguration configuration = getCurrentItemConfiguration();
 		
-		if (configuration.isForceLineBreakPolicy())
-		{
-			splitCharacter = new BreakIteratorSplitCharacter();
-		}
+//		if (configuration.isForceLineBreakPolicy())
+//		{
+//			splitCharacter = new BreakIteratorSplitCharacter();
+//		}
+		
+		splitCharacter = new BreakIteratorSplitCharacter();
 		
 		crtOddPageOffsetX = configuration.getOddPageOffsetX();
 		crtOddPageOffsetY = configuration.getOddPageOffsetY();
@@ -2152,6 +2154,9 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 	 */
 	protected Paragraph getPhrase(AttributedString as, String text, JRPrintText textElement)
 	{
+		
+		log.debug("getPhrase :"+text);
+		
 		Paragraph phrase = new Paragraph();
 		int runLimit = 0;
 
@@ -2159,10 +2164,21 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 		Locale locale = getTextLocale(textElement);
 		 
 		boolean firstChunk = true;
+		
+		log.debug("runLimit = " + runLimit +", text.length=" + text.length() );
+		
 		while(runLimit < text.length() && (runLimit = iterator.getRunLimit()) <= text.length())
 		{
+			log.debug("runLimit = " + runLimit);
+			
 			Map<Attribute,Object> attributes = iterator.getAttributes();
+			
+			log.debug("this line is '"+ text.substring(iterator.getIndex(), runLimit) +"'");
+			
 			Text chunk = getChunk(attributes, text.substring(iterator.getIndex(), runLimit), locale);
+			
+			
+			
 			
 			if (firstChunk)
 			{
@@ -2231,6 +2247,8 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 			}
 		}
 
+		log.debug("splitCharacter = " + splitCharacter);
+		
 		if (splitCharacter != null)
 		{
 			//TODO use line break offsets if available?

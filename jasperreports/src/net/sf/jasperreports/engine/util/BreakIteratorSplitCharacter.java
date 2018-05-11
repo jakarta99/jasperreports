@@ -26,7 +26,11 @@ package net.sf.jasperreports.engine.util;
 import java.text.BreakIterator;
 import java.text.CharacterIterator;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import net.sf.jasperreports.engine.JRRuntimeException;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.export.PdfReportConfiguration;
 
 import com.itextpdf.io.font.otf.GlyphLine;
@@ -46,6 +50,8 @@ import com.itextpdf.layout.splitting.ISplitCharacters;
 public class BreakIteratorSplitCharacter implements ISplitCharacters
 {
 
+	private static final Log log = LogFactory.getLog(BreakIteratorSplitCharacter.class);
+	
 //	private char[] chars;
 //	private int start, end;
 //	private boolean[] boundary;
@@ -65,10 +71,24 @@ public class BreakIteratorSplitCharacter implements ISplitCharacters
 
 	@Override
 	public boolean isSplitCharacter(GlyphLine text, int glyphPos) {
+		
+		//log.debug("text = "+text);
+		
+		
 		if (!text.get(glyphPos).hasValidUnicode()) {
             return false;
         }
         int charCode = text.get(glyphPos).getUnicode();
+        
+        /*
+        log.debug("charCode : "+ (charCode <= ' ' || charCode == '-' || charCode == '\u2010'
+                || (charCode >= 0x2002 && charCode <= 0x200b)
+                || (charCode >= 0x2e80 && charCode < 0xd7a0)
+                || (charCode >= 0xf900 && charCode < 0xfb00)
+                || (charCode >= 0xfe30 && charCode < 0xfe50)
+                || (charCode >= 0xff61 && charCode < 0xffa0)));
+        */
+        
         return (charCode <= ' ' || charCode == '-' || charCode == '\u2010'
                 || (charCode >= 0x2002 && charCode <= 0x200b)
                 || (charCode >= 0x2e80 && charCode < 0xd7a0)

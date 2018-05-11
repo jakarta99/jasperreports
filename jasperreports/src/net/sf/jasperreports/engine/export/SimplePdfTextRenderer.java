@@ -23,6 +23,7 @@
  */
 package net.sf.jasperreports.engine.export;
 
+import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 
 import org.apache.commons.logging.Log;
@@ -71,6 +72,14 @@ public class SimplePdfTextRenderer extends AbstractPdfTextRenderer
 
 		AttributedString as = styledText.getAttributedString();
 
+		AttributedCharacterIterator asIterator = as.getIterator();
+		
+		log.debug("AttributedCharacterIterator -- ");
+		log.debug(asIterator.getAttributes());
+		
+		
+			
+		
 		return pdfExporter.getPhrase(as, text, textElement);
 	}
 
@@ -78,12 +87,13 @@ public class SimplePdfTextRenderer extends AbstractPdfTextRenderer
 	@Override
 	public void render()
 	{
-		
+		/*
 		float llx = x + leftPadding;
 		float lly = pdfExporter.getCurrentPageFormat().getPageHeight()
 				- y
-				- topPadding
-				- verticalAlignOffset
+				//- topPadding
+				 - verticalAlignOffset
+				// - text.getLeadingOffset()
 				+ text.getHeight();
 		float rectWidth = x + width - rightPadding - (x + leftPadding);
 		float rectHeight = pdfExporter.getCurrentPageFormat().getPageHeight()
@@ -91,12 +101,20 @@ public class SimplePdfTextRenderer extends AbstractPdfTextRenderer
 				- height
 				+ bottomPadding - (pdfExporter.getCurrentPageFormat().getPageHeight()
 				- y
-				- topPadding
-				- verticalAlignOffset
-				- text.getLeadingOffset()
+				//- topPadding
+				// - verticalAlignOffset
+				 - text.getLeadingOffset()
 				//+ text.getHeight()
 				);
 		
+		*/
+		
+		float llx = x + leftPadding;
+		float lly = pdfExporter.getCurrentPageFormat().getPageHeight() - y - verticalAlignOffset - text.getLeadingOffset() - text.getHeight();
+		float rectWidth  = width ;
+		float rectHeight = height;
+		
+		log.debug("Draw text :"+text.getOriginalText());
 		log.debug("llx = "+ llx);
 		log.debug("lly = "+ lly);
 		log.debug("width = "+rectWidth);
@@ -104,16 +122,25 @@ public class SimplePdfTextRenderer extends AbstractPdfTextRenderer
 		
 		
 		Rectangle rectangle = new Rectangle( llx, lly, rectWidth, rectHeight );
-		Paragraph paragraph = getPhrase(styledText, text);
-		paragraph
-			.setTextAlignment( (horizontalAlignment == TextAlignment.JUSTIFIED_ALL)? TextAlignment.JUSTIFIED : horizontalAlignment )
-			.setFixedLeading(text.getLineSpacingFactor())
-			.setBaseDirection((text.getRunDirectionValue() == RunDirectionEnum.LTR) ? BaseDirection.LEFT_TO_RIGHT : BaseDirection.RIGHT_TO_LEFT);
 		
+		
+//		pdfCanvas.rectangle(rectangle);
+//		pdfCanvas.stroke();
 		
 		Canvas canvas = new Canvas(pdfCanvas, pdfDocument, rectangle);
+		
+		
+		Paragraph paragraph = getPhrase(styledText, text);
+		
+		paragraph
+			.setTextAlignment( (horizontalAlignment == TextAlignment.JUSTIFIED_ALL)? TextAlignment.JUSTIFIED : horizontalAlignment )
+			//.setFixedLeading(text.getLineSpacingFactor())
+			.setBaseDirection((text.getRunDirectionValue() == RunDirectionEnum.LTR) ? BaseDirection.LEFT_TO_RIGHT : BaseDirection.RIGHT_TO_LEFT);
+		
 		canvas.add(paragraph);
+		
 		canvas.close();
+		
 		
 	}
 
