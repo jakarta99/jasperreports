@@ -25,6 +25,9 @@ package net.sf.jasperreports.engine.export;
 
 import java.text.AttributedString;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.layout.Canvas;
 import com.itextpdf.layout.element.Paragraph;
@@ -48,6 +51,8 @@ import net.sf.jasperreports.engine.util.JRStyledText;
  */
 public class SimplePdfTextRenderer extends AbstractPdfTextRenderer
 {
+	
+	private static final Log log = LogFactory.getLog(SimplePdfTextRenderer.class);
 	/**
 	 * 
 	 */
@@ -74,24 +79,31 @@ public class SimplePdfTextRenderer extends AbstractPdfTextRenderer
 	public void render()
 	{
 		
-		Rectangle rectangle = new Rectangle(
-				x + leftPadding,
-				pdfExporter.getCurrentPageFormat().getPageHeight()
+		float llx = x + leftPadding;
+		float lly = pdfExporter.getCurrentPageFormat().getPageHeight()
 				- y
 				- topPadding
 				- verticalAlignOffset
-				- text.getLeadingOffset(),
-			x + width - rightPadding - (x + leftPadding),
-			pdfExporter.getCurrentPageFormat().getPageHeight()
+				+ text.getHeight();
+		float rectWidth = x + width - rightPadding - (x + leftPadding);
+		float rectHeight = pdfExporter.getCurrentPageFormat().getPageHeight()
 				- y
 				- height
 				+ bottomPadding - (pdfExporter.getCurrentPageFormat().getPageHeight()
 				- y
 				- topPadding
 				- verticalAlignOffset
-				- text.getLeadingOffset())
-			);
+				- text.getLeadingOffset()
+				//+ text.getHeight()
+				);
 		
+		log.debug("llx = "+ llx);
+		log.debug("lly = "+ lly);
+		log.debug("width = "+rectWidth);
+		log.debug("height = " + rectHeight);
+		
+		
+		Rectangle rectangle = new Rectangle( llx, lly, rectWidth, rectHeight );
 		Paragraph paragraph = getPhrase(styledText, text);
 		paragraph
 			.setTextAlignment( (horizontalAlignment == TextAlignment.JUSTIFIED_ALL)? TextAlignment.JUSTIFIED : horizontalAlignment )
