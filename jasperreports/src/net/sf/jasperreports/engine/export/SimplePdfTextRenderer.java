@@ -140,9 +140,13 @@ public class SimplePdfTextRenderer extends AbstractPdfTextRenderer
 		
 		Paragraph paragraph = getPhrase(styledText, text);
 		
+		log.debug("getLeadingOffset = "+text.getLeadingOffset());
+		log.debug("getLineSpacingFactor = "+text.getLineSpacingFactor());
+		
 		paragraph
 			.setTextAlignment( (horizontalAlignment == TextAlignment.JUSTIFIED_ALL)? TextAlignment.JUSTIFIED : horizontalAlignment )
-			//.setFixedLeading(text.getLineSpacingFactor())
+			.setFixedLeading(0)
+			.setMultipliedLeading(text.getLineSpacingFactor())
 			.setBaseDirection((text.getRunDirectionValue() == RunDirectionEnum.LTR) ? BaseDirection.LEFT_TO_RIGHT : BaseDirection.RIGHT_TO_LEFT);
 		
 //		paragraph.setNextRenderer(new ParagraphRenderer(paragraph) {
