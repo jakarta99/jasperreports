@@ -86,26 +86,13 @@ public class SimplePdfTextRenderer extends AbstractPdfTextRenderer
 	{
 		
 		float llx = x + leftPadding;
-		// 座標位置，不可能於 pageHeight
+		// y 軸座標位置，不可能大於 pageHeight
 		float lly = pdfExporter.getCurrentPageFormat().getPageHeight()
 				- y
 				- topPadding
 				- verticalAlignOffset;
-//		log.debug("pdfExporter.getCurrentPageFormat().getPageHeight: " + pdfExporter.getCurrentPageFormat().getPageHeight()
-//				+ ", topPadding: " + topPadding
-//				+ ", verticalAlignOffset: " + verticalAlignOffset
-//				+ ", text.getTextHeight: " + text.getTextHeight()
-//				);
 		float rectWidth = x + width - rightPadding - (x + leftPadding);
 		float rectHeight = -text.getHeight() + text.getTextHeight() + verticalAlignOffset;
-//		log.debug("y: " + y
-//				+ ", height: " + height
-//				+ ", bottomPadding: " + bottomPadding
-//				+ ", pdfExporter.getCurrentPageFormat().getPageHeight(): " + pdfExporter.getCurrentPageFormat().getPageHeight()
-//				+ ", y: " + y
-//				+ ", topPadding: " + topPadding
-//				+ ", verticalAlignOffset: " + verticalAlignOffset
-//				+ ", text.getLeadingOffset(): " + text.getLeadingOffset());
 		log.debug("llx = "+ llx);
 		log.debug("lly = "+ lly);
 		log.debug("width = "+rectWidth);
@@ -115,10 +102,6 @@ public class SimplePdfTextRenderer extends AbstractPdfTextRenderer
 		Rectangle rectangle = new Rectangle( llx, lly, rectWidth, rectHeight );
 		Paragraph paragraph = getPhrase(styledText, text);
 		
-//		log.debug("text= "+ styledText.getText());
-//		log.debug("text.getHeight: " + text.getHeight()
-//				+ ", text.getTextHeight: " + text.getTextHeight()
-//				+ ", text.getWidth: " + text.getWidth());
 		paragraph
 			.setTextAlignment( (horizontalAlignment == TextAlignment.JUSTIFIED_ALL)? TextAlignment.JUSTIFIED : horizontalAlignment )
 			.setFixedLeading(text.getLineSpacingFactor())
