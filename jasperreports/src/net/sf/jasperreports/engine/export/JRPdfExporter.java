@@ -634,12 +634,10 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 
 		PdfReportConfiguration configuration = getCurrentItemConfiguration();
 		
-//		if (configuration.isForceLineBreakPolicy())
-//		{
-//			splitCharacter = new BreakIteratorSplitCharacter();
-//		}
-		
-		splitCharacter = new BreakIteratorSplitCharacter();
+		if (configuration.isForceLineBreakPolicy())
+		{
+			splitCharacter = new BreakIteratorSplitCharacter();
+		}
 		
 		crtOddPageOffsetX = configuration.getOddPageOffsetX();
 		crtOddPageOffsetY = configuration.getOddPageOffsetY();
