@@ -2191,7 +2191,9 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 			}
 			
 			setHyperlinkInfo(chunk, hyperlink);
-			phrase.add(chunk);
+			
+			//https://stackoverflow.com/questions/46970739/is-there-any-way-to-keep-whitespaces-before-text-in-itext7
+			phrase.add("\u0000").add(chunk);
 
 			iterator.setIndex(runLimit);
 			firstChunk = false;
