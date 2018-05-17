@@ -1123,7 +1123,8 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 		{
 		case LANDSCAPE:
 			// using rotate to indicate landscape page
-			pageSize = new Rectangle(pageHeight, pageWidth);
+			// 當在 jasperreport 設定  Orientation 時，長與寬會自動轉換，因此這邊不需做處理
+			pageSize = new Rectangle(pageWidth, pageHeight);
 			break;
 		default:
 			pageSize = new Rectangle(pageWidth, pageHeight);
