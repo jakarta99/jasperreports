@@ -23,23 +23,20 @@
  */
 package net.sf.jasperreports.engine.export;
 
+import java.awt.Color;
+import java.awt.font.TextAttribute;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.layout.Canvas;
 import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.layout.LayoutArea;
 import com.itextpdf.layout.property.BaseDirection;
 import com.itextpdf.layout.property.TextAlignment;
-import com.itextpdf.layout.renderer.CanvasRenderer;
-import com.itextpdf.layout.renderer.ParagraphRenderer;
 
 //import com.lowagie.text.DocumentException;
 //import com.lowagie.text.Element;
@@ -146,6 +143,7 @@ public class SimplePdfTextRenderer extends AbstractPdfTextRenderer
 		paragraph
 			.setTextAlignment( (horizontalAlignment == TextAlignment.JUSTIFIED_ALL)? TextAlignment.JUSTIFIED : horizontalAlignment )
 			.setFixedLeading(0)
+			.setBackgroundColor(new DeviceRgb(text.getBackcolor()))
 			.setMultipliedLeading(text.getLineSpacingFactor())
 			.setBaseDirection((text.getRunDirectionValue() == RunDirectionEnum.LTR) ? BaseDirection.LEFT_TO_RIGHT : BaseDirection.RIGHT_TO_LEFT);
 		
