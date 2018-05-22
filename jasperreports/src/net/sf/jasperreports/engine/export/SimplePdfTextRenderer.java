@@ -115,15 +115,14 @@ public class SimplePdfTextRenderer extends AbstractPdfTextRenderer
 		*/
 		
 		float llx = x + leftPadding;
-		float lly = pdfExporter.getCurrentPageFormat().getPageHeight() - y - verticalAlignOffset - text.getLeadingOffset() - text.getHeight();
-		float rectWidth  = width ;
+		float lly = pdfExporter.getCurrentPageFormat().getPageHeight() - y - verticalAlignOffset - text.getLeadingOffset() - height; //text.getHeight();
+		float rectWidth  = width;
 		float rectHeight = height;
 		
 
-		log.debug("llx = "+ llx);
-		log.debug("lly = "+ lly);
-		log.debug("width = "+rectWidth);
-		log.debug("height = " + rectHeight);
+		log.debug("llx = " + llx);
+		log.debug("lly = " + lly);
+		log.debug("width = " + rectWidth);
 		
 		
 		Rectangle rectangle = new Rectangle( llx, lly, rectWidth, rectHeight );
