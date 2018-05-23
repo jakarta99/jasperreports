@@ -673,8 +673,7 @@ public abstract class JRFillTextElement extends JRFillElement implements JRTextE
 		
 		isLeftToRight = measuredText.isLeftToRight();
 		setTextWidth(measuredText.getTextWidth());
-		Log.info("font " + processedText.getGlobalAttributes().get(TextAttribute.FAMILY));
-//		setTextHeight(measuredText.getTextHeight() * 1.25f);
+		// TODO 目前先乘上 1.4 倍。正確改法應該是要有辦法正確計算出字體及大小所需要的高度
 		setTextHeight(measuredText.getTextHeight() * 1.40f);
 		
 		//elementStretchHeightDelta = 0;
