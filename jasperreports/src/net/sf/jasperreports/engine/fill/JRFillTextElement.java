@@ -29,6 +29,8 @@ import java.text.AttributedCharacterIterator.Attribute;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jfree.util.Log;
+
 import net.sf.jasperreports.annotations.properties.Property;
 import net.sf.jasperreports.annotations.properties.PropertyScope;
 import net.sf.jasperreports.engine.JRCommonText;
@@ -671,7 +673,9 @@ public abstract class JRFillTextElement extends JRFillElement implements JRTextE
 		
 		isLeftToRight = measuredText.isLeftToRight();
 		setTextWidth(measuredText.getTextWidth());
-		setTextHeight(measuredText.getTextHeight());
+		Log.info("font " + processedText.getGlobalAttributes().get(TextAttribute.FAMILY));
+//		setTextHeight(measuredText.getTextHeight() * 1.25f);
+		setTextHeight(measuredText.getTextHeight() * 1.40f);
 		
 		//elementStretchHeightDelta = 0;
 		if (getRotationValue().equals(RotationEnum.NONE))

@@ -123,7 +123,7 @@ public class SimplePdfTextRenderer extends AbstractPdfTextRenderer
 		log.debug("llx = " + llx);
 		log.debug("lly = " + lly);
 		log.debug("width = " + rectWidth);
-		
+		log.debug("height = " + rectHeight);
 		
 		Rectangle rectangle = new Rectangle( llx, lly, rectWidth, rectHeight );
 		
@@ -142,7 +142,8 @@ public class SimplePdfTextRenderer extends AbstractPdfTextRenderer
 		paragraph
 			.setTextAlignment( (horizontalAlignment == TextAlignment.JUSTIFIED_ALL)? TextAlignment.JUSTIFIED : horizontalAlignment )
 			.setFixedLeading(0)
-			.setBackgroundColor(new DeviceRgb(text.getBackcolor()))
+			// TODO background 如果沒填滿 canvas 會有問題
+//			.setBackgroundColor(new DeviceRgb(text.getBackcolor()))
 			.setMultipliedLeading(text.getLineSpacingFactor())
 			.setBaseDirection((text.getRunDirectionValue() == RunDirectionEnum.LTR) ? BaseDirection.LEFT_TO_RIGHT : BaseDirection.RIGHT_TO_LEFT);
 		
