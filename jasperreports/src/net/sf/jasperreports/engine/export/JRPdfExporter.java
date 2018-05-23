@@ -984,15 +984,14 @@ public class JRPdfExporter extends JRAbstractExporter<PdfReportConfiguration, Pd
 //						pdfCanvas = new PdfCanvas(pdfDocument.addNewPage());
 						pdfCanvas = new PdfCanvas(pdfDocument.addNewPage(new PageSize(pageFormat.getPageWidth(), pageFormat.getPageHeight())));
 						Rectangle rectangle = new Rectangle(pageFormat.getPageWidth(), pageFormat.getPageHeight());
-						//pdfCanvas.rectangle(rectangle);
 						
 						if (sizePageToContent || oldPageFormat != pageFormat)
 						{
 							rectangle =  getPageSize(sizePageToContent ? page : null);
 						}
 						
-						pdfCanvas.rectangle(rectangle);
-						pdfCanvas.stroke();
+//						pdfCanvas.rectangle(rectangle);
+//						pdfCanvas.stroke();
 						
 						pdfCanvas.setLineCapStyle(LineCapStyle.PROJECTING_SQUARE);
 
